@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { PM2 } from "../model";
+import { PM2Tree } from "../model";
 
-export const registerData = (pm2: PM2) => {
-    vscode.window.registerTreeDataProvider("pm2-processes", pm2);
+export const registerData = (pm2Tree: PM2Tree) => {
+    vscode.window.registerTreeDataProvider("pm2-processes", pm2Tree);
 };

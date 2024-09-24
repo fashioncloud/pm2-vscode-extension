@@ -7,7 +7,7 @@ const getProcessLabel = (process: nodePm2.ProcessDescription): string => {
     return process.name!;
 };
 
-export class Process extends vscode.TreeItem {
+export class ProcessTreeItem extends vscode.TreeItem {
     public readonly label?: string;
     public readonly contextValue = "pm2-process";
 
@@ -16,7 +16,7 @@ export class Process extends vscode.TreeItem {
         private readonly _pm2: Promise<typeof nodePm2>,
         private _context: vscode.ExtensionContext,
         private readonly _onDidChangeTreeData: vscode.EventEmitter<
-            Process | undefined
+            ProcessTreeItem | undefined
         >
     ) {
         super(

@@ -4,11 +4,17 @@
     "description": "Manage PM2 within VSCode",
     "icon": "resources/logo.png",
     "license": "MIT",
+    "keywords": [
+        "pm2",
+        "process manager",
+        "vscode",
+        "extension"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/fashioncloud/pm2-vscode-extension.git"
     },
-    "version": "1.0.27",
+    "version": "1.0.28",
     "publisher": "betomoretti",
     "engines": {
         "vscode": "^1.93.1"
@@ -44,7 +50,12 @@
                 },
                 {
                     "when": "viewItem == pm2-process",
-                    "command": "pm2.logs",
+                    "command": "pm2.logsOnTerminal",
+                    "group": "pm2"
+                },
+                {
+                    "when": "viewItem == pm2-process",
+                    "command": "pm2.logsOnChannel",
                     "group": "pm2"
                 },
                 {
@@ -113,7 +124,12 @@
                 "category": "pm2"
             },
             {
-                "command": "pm2.logs",
+                "command": "pm2.logsOnTerminal",
+                "title": "Process: View Logs on terminal",
+                "category": "pm2"
+            },
+            {
+                "command": "pm2.logsOnChannel",
                 "title": "Process: View Logs",
                 "category": "pm2"
             },

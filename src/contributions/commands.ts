@@ -1,28 +1,48 @@
 import * as vscode from "vscode";
-import { PM2, Process } from "../model";
+import { PM2Tree, ProcessTreeItem } from "../model";
+import { getBus, PM2Packet } from "../model/pm2API";
 
-export const registerCommands = (pm2: PM2) => {
-    vscode.commands.registerCommand("pm2.reload", (item: Process) => {
+
+export const registerCommands = (pm2: PM2Tree) => {
+    vscode.commands.registerCommand("pm2.reload", (item: ProcessTreeItem) => {
         pm2.reload(item.process);
     });
 
-    vscode.commands.registerCommand("pm2.reloadEnv", (item: Process) => {
-        pm2.reloadEnv(item.process);
+    vscode.commands.registerCommand("pm2.reloadEnv", (item: ProcessTreeItem) => {
+        // pm2.reloadEnv(item.process);
     });
 
-    vscode.commands.registerCommand("pm2.logs", (item: Process) => {
+    vscode.commands.registerCommand("pm2.logsOnTerminal", (item: ProcessTreeItem) => {
         pm2.logs(item.process);
     });
 
-    vscode.commands.registerCommand("pm2.flushLogs", (item: Process) => {
+    vscode.commands.registerCommand("pm2.logsOnChannel", async (item: ProcessTreeItem) => {
+        const logChannel = vscode.window.createOutputChannel(
+            `${item.process.name} logs`,
+        );
+        logChannel.show();
+        const bus = await getBus();
+        bus.on("log:out", (packet: PM2Packet) => {
+            if (packet.process.name === item.process.name) {
+                logChannel.appendLine(`${packet.data as string}`);
+            }
+        });
+        bus.on("log:err", (packet: PM2Packet) => {
+            if (packet.process.name === item.process.name) {
+                logChannel.appendLine(`${packet.data as string}`);
+            }
+        });
+    });
+
+    vscode.commands.registerCommand("pm2.flushLogs", (item: ProcessTreeItem) => {
         pm2.flushLogs(item.process);
     });
 
-    vscode.commands.registerCommand("pm2.start", (item: Process) => {
+    vscode.commands.registerCommand("pm2.start", (item: ProcessTreeItem) => {
         item.start();
     });
 
-    vscode.commands.registerCommand("pm2.stop", (item: Process) => {
+    vscode.commands.registerCommand("pm2.stop", (item: ProcessTreeItem) => {
         item.stop();
     });
 
