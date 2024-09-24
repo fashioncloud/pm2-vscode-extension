@@ -14,13 +14,18 @@ export class Process extends vscode.TreeItem {
     constructor(
         public readonly process: nodePm2.ProcessDescription,
         private readonly _pm2: Promise<typeof nodePm2>,
-        private _context: vscode.ExtensionContext
+        private _context: vscode.ExtensionContext,
+        private readonly _onDidChangeTreeData: vscode.EventEmitter<
+            Process | undefined
+        >
     ) {
         super(
             getProcessLabel(process),
             vscode.TreeItemCollapsibleState.Collapsed
         );
         this.label = getProcessLabel(process);
+        this.iconPath = this.getIconPath();
+        this.tooltip = this.getTooltip();
     }
 
     start() {
@@ -29,9 +34,11 @@ export class Process extends vscode.TreeItem {
                 {
                     name: this.process.name!
                 },
-                errCallback(() =>
+                errCallback(() =>{
                     showMsg(`Started process ${this.process.name}`)
-                )
+                    this.iconPath = this.getIconPath();
+                    this._onDidChangeTreeData.fire(undefined);
+                })
             )
         );
     }
@@ -40,16 +47,17 @@ export class Process extends vscode.TreeItem {
         this._pm2.then(pm2 =>
             pm2.stop(
                 this.process.name!,
-                errCallback(() =>
-                    showMsg(`Stopped process ${this.process.name}`)
-                )
+                errCallback(() =>{
+                    showMsg(`Stopped process ${this.process.name}`);
+                    this.iconPath = this.getIconPath();
+                    this._onDidChangeTreeData.fire(undefined);
+                })
             )
         );
     }
 
-    get iconPath(): string | undefined {
+    private getIconPath(): string | undefined {
         const { status } = this.process.pm2_env!;
-
         switch (status) {
             case "errored":
             case "online":
@@ -64,7 +72,7 @@ export class Process extends vscode.TreeItem {
         }
     }
 
-    get tooltip(): string {
+    private getTooltip(): string {
         return `Name: ${this.label}
 PID: ${this.process.pid}`;
     }

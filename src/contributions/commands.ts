@@ -6,8 +6,16 @@ export const registerCommands = (pm2: PM2) => {
         pm2.reload(item.process);
     });
 
+    vscode.commands.registerCommand("pm2.reloadEnv", (item: Process) => {
+        pm2.reloadEnv(item.process);
+    });
+
     vscode.commands.registerCommand("pm2.logs", (item: Process) => {
         pm2.logs(item.process);
+    });
+
+    vscode.commands.registerCommand("pm2.flushLogs", (item: Process) => {
+        pm2.flushLogs(item.process);
     });
 
     vscode.commands.registerCommand("pm2.start", (item: Process) => {
@@ -20,6 +28,10 @@ export const registerCommands = (pm2: PM2) => {
 
     vscode.commands.registerCommand("pm2.logsAll", () => {
         pm2.logs();
+    });
+
+    vscode.commands.registerCommand("pm2.flushAll", () => {
+        pm2.flushLogs();
     });
 
     vscode.commands.registerCommand("pm2.startAll", () => {
