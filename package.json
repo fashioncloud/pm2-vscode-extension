@@ -14,7 +14,7 @@
         "type": "git",
         "url": "https://github.com/fashioncloud/pm2-vscode-extension.git"
     },
-    "version": "1.0.28",
+    "version": "2.0.0",
     "publisher": "betomoretti",
     "engines": {
         "vscode": "^1.93.1"
@@ -50,12 +50,7 @@
                 },
                 {
                     "when": "viewItem == pm2-process",
-                    "command": "pm2.logsOnTerminal",
-                    "group": "pm2"
-                },
-                {
-                    "when": "viewItem == pm2-process",
-                    "command": "pm2.logsOnChannel",
+                    "command": "pm2.logs",
                     "group": "pm2"
                 },
                 {
@@ -82,7 +77,7 @@
                 },
                 {
                     "when": "view == pm2-processes",
-                    "command": "pm2.logsAll",
+                    "command": "pm2.logs",
                     "group": "pm2"
                 },
                 {
@@ -124,12 +119,7 @@
                 "category": "pm2"
             },
             {
-                "command": "pm2.logsOnTerminal",
-                "title": "Process: View Logs on terminal",
-                "category": "pm2"
-            },
-            {
-                "command": "pm2.logsOnChannel",
+                "command": "pm2.logs",
                 "title": "Process: View Logs",
                 "category": "pm2"
             },
@@ -144,7 +134,7 @@
                 "category": "pm2.container"
             },
             {
-                "command": "pm2.logsAll",
+                "command": "pm2.logs",
                 "title": "Processes: Logs",
                 "category": "pm2.container"
             },

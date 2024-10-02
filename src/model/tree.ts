@@ -24,6 +24,9 @@ export class PM2Tree
         private readonly config?: vscode.WorkspaceConfiguration,
     ) {}
 
+    /**
+     * @deprecated
+     */
     logs(process?: ProcessDescription) {
         util.showMsg(`Opening logs for ${process?.name ?  process?.name + " process" : "all processes"}`);
         const terminal = vscode.window.createTerminal(`PM2 ${process?.name || ''} logs`);
@@ -57,10 +60,25 @@ export class PM2Tree
         });
     }
 
-    reloadAll() {
-        pm2Client().then(pm2 => {
-            pm2.reload("all", util.errCallback());
-        });
+    async reloadAll() {
+        try {
+            await pm2Client().then(pm2 =>
+                new Promise<Proc>((resolve, reject) => {
+                    pm2.reload('all', (err, proc) => {
+                        if(err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(proc);
+                    })
+                })
+            );
+            util.showMsg("Reloaded all processes");
+            this._onDidChangeTreeData.fire(undefined);
+        } catch (error) {
+            console.error('PM2 error: starting all processes failed', error);
+            util.showErr("Could not start all processes");
+        }
     }
 
     async startAll() {

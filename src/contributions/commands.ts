@@ -12,13 +12,27 @@ export const registerCommands = (pm2: PM2Tree) => {
         // pm2.reloadEnv(item.process);
     });
 
-    vscode.commands.registerCommand("pm2.logsOnTerminal", (item: ProcessTreeItem) => {
-        pm2.logs(item.process);
-    });
+    vscode.commands.registerCommand("pm2.logs", async (item?: ProcessTreeItem) => {
 
-    vscode.commands.registerCommand("pm2.logsOnChannel", async (item: ProcessTreeItem) => {
+        if (!item) {
+            const logChannel = vscode.window.createOutputChannel(
+                `PM2 logs`,
+                { log: true }
+            );
+            logChannel.show();
+            const bus = await getBus();
+            bus.on("log:out", (packet: PM2Packet) => {
+                logChannel.appendLine(`${packet.data as string}`);
+            });
+            bus.on("log:err", (packet: PM2Packet) => {
+                logChannel.appendLine(`${packet.data as string}`);
+            });
+
+            return;
+        }
         const logChannel = vscode.window.createOutputChannel(
             `${item.process.name} logs`,
+            { log: true }
         );
         logChannel.show();
         const bus = await getBus();
@@ -44,10 +58,6 @@ export const registerCommands = (pm2: PM2Tree) => {
 
     vscode.commands.registerCommand("pm2.stop", (item: ProcessTreeItem) => {
         item.stop();
-    });
-
-    vscode.commands.registerCommand("pm2.logsAll", () => {
-        pm2.logs();
     });
 
     vscode.commands.registerCommand("pm2.flushAll", () => {
