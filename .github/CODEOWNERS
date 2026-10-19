@@ -1,1 +1,4 @@
 * @fashioncloud/core
+
+# API endpoint changes need tech-lead review
+**/endpoints.tf @fashioncloud/tech-lead
